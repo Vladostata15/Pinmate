@@ -28,7 +28,7 @@ public class SplashScreen extends AppCompatActivity {
         Animation textAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_with_move_up);
         binding.title.startAnimation(textAnimation);
 
-        // Поток для задержки и перехода на экран Sign In
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -40,7 +40,7 @@ public class SplashScreen extends AppCompatActivity {
                     // Переходим на экран Sign In
                     Intent intent = new Intent(SplashScreen.this, LogInScreen.class);
                     startActivity(intent);
-                    finish(); // Закрываем SplashScreen, чтобы кнопка "Назад" не возвращала на него
+                    finish();
                 }
             }
         }).start();
