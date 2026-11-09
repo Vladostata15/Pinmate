@@ -18,27 +18,23 @@
         <activity
             android:name=".SplashScreen"
             android:exported="true"
+            android:theme="@style/Theme.Pinmate.Splash"
             android:windowSoftInputMode="adjustResize" >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+        <activity
+            android:name=".SignUpScreen"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".SignInScreen"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize" >
-
-
-        </activity>
-        <activity
-            android:name=".LogInScreen"
-            android:exported="true"
             android:windowSoftInputMode="adjustResize">
-
 
         </activity>
     </application>

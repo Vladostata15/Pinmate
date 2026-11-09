@@ -1,10 +1,9 @@
 package com.example.pinmate;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.RadioButton;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +13,12 @@ import com.example.pinmate.databinding.ActivitySignInScreenBinding;
 public class SignInScreen extends AppCompatActivity {
 
     private ActivitySignInScreenBinding binding;
+    private SharedPreferences prefs;
+
+    private static final String PREFS_NAME = "login_prefs";
+    private static final String KEY_USERNAME = "username";
+    private static final String KEY_PASSWORD = "password";
+    private static final String KEY_REMEMBER = "remember_me";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,64 +28,59 @@ public class SignInScreen extends AppCompatActivity {
         binding = ActivitySignInScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.tvLogIn.setOnClickListener(new View.OnClickListener() {
+        prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+
+
+        if (prefs.getBoolean(KEY_REMEMBER, false)) {
+            binding.etSignInUsername.setText(prefs.getString(KEY_USERNAME, ""));
+            binding.etSignInPassword.setText(prefs.getString(KEY_PASSWORD, ""));
+            binding.cbRememberMe.setChecked(true);
+        }
+
+        if (getIntent() != null) {
+            String savedUsername = getIntent().getStringExtra("username");
+            String savedPassword = getIntent().getStringExtra("password");
+            if (savedUsername != null) {
+                binding.etSignInUsername.setText(savedUsername);
+            }
+            if (savedPassword != null) {
+                binding.etSignInPassword.setText(savedPassword);
+            }
+        }
+
+        binding.tvSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SignInScreen.this, LogInScreen.class);
+                Intent intent = new Intent(SignInScreen.this, SignUpScreen.class);
                 startActivity(intent);
                 finish();
             }
         });
 
-        binding.btnSignUp.setOnClickListener(new View.OnClickListener() {
+        binding.btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = binding.etUsername.getText().toString().trim();
-                String email = binding.etSignUpEmail.getText().toString().trim();
-                String password = binding.etSignUpPassword.getText().toString().trim();
-                String confirmPassword = binding.etConfirmPassword.getText().toString().trim();
-                int age = binding.numberPickerAge.getValue();
-                int selectedGenderId = binding.rgGender.getCheckedRadioButtonId();
+                String username = binding.etSignInUsername.getText().toString().trim();
+                String password = binding.etSignInPassword.getText().toString().trim();
 
                 if (username.isEmpty()) {
-                    binding.etUsername.setError("Fill Username");
-                    binding.etUsername.requestFocus();
+                    binding.etSignInUsername.setError("Fill username");
+                    binding.etSignInUsername.requestFocus();
+                    return;
+                }
+                if (password.isEmpty()) {
+                    binding.etSignInPassword.setError("Fill password");
+                    binding.etSignInPassword.requestFocus();
                     return;
                 }
 
-                if (email.isEmpty()) {
-                    binding.etSignUpEmail.setError("Fill Email");
-                    binding.etSignUpEmail.requestFocus();
-                    return;
+                if (binding.cbRememberMe.isChecked()) {
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString(KEY_USERNAME, username);
+                    editor.putString(KEY_PASSWORD, password);
+                    editor.putBoolean(KEY_REMEMBER, true);
+                    editor.apply();
                 }
-
-                if (password.length() < 6) {
-                    binding.etSignUpPassword.setError("Password must be at least 6 characters long");
-                    binding.etSignUpPassword.requestFocus();
-                    return;
-                }
-
-                if (!password.equals(confirmPassword)) {
-                    binding.etConfirmPassword.setError("Passwords don't match");
-                    binding.etConfirmPassword.requestFocus();
-                    return;
-                }
-
-                if (selectedGenderId == -1) {
-                    Toast.makeText(SignInScreen.this, "Select gender", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                RadioButton selectedGender = findViewById(selectedGenderId);
-                String gender = selectedGender.getText().toString();
-
-                Intent intent = new Intent(SignInScreen.this, LogInScreen.class);
-                intent.putExtra("username", username);
-                intent.putExtra("password", password);
-                intent.putExtra("age", age);
-                intent.putExtra("gender", gender);
-                startActivity(intent);
-                finish();
             }
         });
     }
