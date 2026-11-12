@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Pinmate</string>
+    <string name="remember_me">זכור אותי</string>
+    <string name="menu_save">שמור</string>
+    <string name="menu_share">שתף</string>
+    <string name="menu_theme">ערכת נושא</string>
+    <string name="menu_exit">יציאה</string>
+</resources>

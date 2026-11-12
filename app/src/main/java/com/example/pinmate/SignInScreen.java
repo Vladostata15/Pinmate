@@ -81,6 +81,10 @@ public class SignInScreen extends AppCompatActivity {
                     editor.putBoolean(KEY_REMEMBER, true);
                     editor.apply();
                 }
+                Intent intent = new Intent(SignInScreen.this, MainActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
+                finish();
             }
         });
     }
